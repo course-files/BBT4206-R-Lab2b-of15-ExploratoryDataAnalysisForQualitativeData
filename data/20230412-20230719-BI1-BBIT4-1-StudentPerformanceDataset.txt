@@ -1,3 +1,14 @@
+The "BI 1 Student Performance Dataset" was collected between August and September 2023.
+It provides 101 observations and 100 variables of data about the Bachelor of Business
+Information Technology (BBIT) students at Strathmore University, Kenya.
+The data concerns the students' performance during the 
+"BBT4106: Business Intelligence I" course offered between 12th April and 19th July 2023.
+
+Contact person: Allan Omondi
+Email: aomondi_at_strathmore_dot_edu
+
+Below is metadata of some of the variables in the dataset:
+
 class_group: The class is divided into 3 groups and the student is either in group A, B, or C.
 gender: 1 = Male, 0 = Female
 YOB: Year of Birth
