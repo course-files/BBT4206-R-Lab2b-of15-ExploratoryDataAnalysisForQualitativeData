@@ -21,3 +21,5 @@ data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.txt
 data/evaluation_likes_and_wishes.csv
 data/evaluation_likes_filtered.csv
 data/evaluation_wishes_filtered.csv
+data/prince_new.csv
+data/prince_raw_data.csv
