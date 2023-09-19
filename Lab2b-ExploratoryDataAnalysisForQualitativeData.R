@@ -1273,7 +1273,6 @@ top_popular_tfidf_words %>%
   coord_flip()
 
 # ############################### ----
-
 # ############################### ----
 
 # [OPTIONAL] **Deinitialization: Create a snapshot of the R environment ----
