@@ -6,7 +6,7 @@
 # Semester Duration: 21st August 2023 to 28th November 2023
 #
 # Lecturer: Allan Omondi
-# Contact: aomondi [at] strathmore.edu
+# Contact: aomondi_at_strathmore_dot_edu
 #
 # Note: The lecture contains both theory and practice. This file forms part of
 #       the practice. It has required lab work submissions that are graded for
@@ -16,7 +16,6 @@
 # See LICENSE file for licensing information.
 # *****************************************************************************
 
-# STEP 1. Install and use renv ----
 # **[OPTIONAL] Initialization: Install and use renv ----
 # The R Environment ("renv") package helps you create reproducible environments
 # for your R projects. This is helpful when working in teams because it makes
@@ -275,7 +274,7 @@ blue_grey_theme <- function() {
 }
 
 # Customize the text tables for consistency using HTML formatting
-my_kable_styling <- function(dat, caption) {
+kable_theme <- function(dat, caption) {
   kable(dat, "html", escape = FALSE, caption = caption) %>%
     kable_styling(bootstrap_options = c("striped", "condensed", "bordered"),
                   full_width = FALSE)
@@ -541,7 +540,7 @@ write.csv(evaluation_likes_and_wishes,
           file = "data/evaluation_likes_and_wishes.csv",
           row.names = FALSE)
 
-## Stemming ----
+## Stemming/Lemmatization ----
 # Stemming is a text processing technique used to reduce words to their base or
 # root form, known as the "stem."
 # The goal of stemming is to simplify words to their common linguistic root,
@@ -552,17 +551,17 @@ write.csv(evaluation_likes_and_wishes,
 # grammatical forms. For example, stemming can convert words like "jumping,"
 # "jumps," and "jumped" to the common stem "jump."
 
-# Stemming is a simple and heuristic-based approach and may not always produce
-# accurate results. In some cases, it may produce stems that are not actual
-# words or may result in ambiguity. For this reason, more advanced techniques
-# like *lemmatization*, which considers the context and grammatical structure
-# of words, are often preferred for certain Natural Language Processing (NLP)
-# tasks.
+# [CAUTION] Stemming is a simple and heuristic-based approach and may not always
+# produce accurate results. In some cases, it may produce stems that are not
+# actual words or may result in ambiguity. For this reason, more advanced
+# techniques like *lemmatization*, which considers the context and grammatical
+# structure of words, are often preferred for certain Natural Language
+# Processing (NLP) tasks.
 
-## Text Mining ----
+## Tokenization ----
 # The goal of text mining is to discover relevant information that is possibly
 # unknown or hidden. Natural Language Processing (NLP) is one methodology used
-# in mining text. It attempts to decipher the ambiguities in written language
+# in text mining. It attempts to decipher the ambiguities in written language
 # by:
 #   (i) tokenization
 #   (ii) clustering
@@ -570,13 +569,13 @@ write.csv(evaluation_likes_and_wishes,
 #   (iv) using algorithms to identify themes and quantify subjective
 #        information.
 
-## Tokenization ----
 # Tokenization is the process of breaking out text into smaller meaningful
 # units called tokens.
 
-# Tokenization is often one of the initial steps in text preprocessing, which
-# prepares text data for analysis. Other preprocessing steps may include
-# removing stopwords, stemming, and lemmatization.
+# In addition to expanding (removing) contractions, removing special
+# characters, converting all text to lower case, and stemming/lemmatization,
+# tokenization can also be performed as part of data cleansing for qualitative
+# data.
 
 # Tokenization is a crucial step in NLP because it allows text data to be
 # represented in a format that can be used for further analysis and machine
@@ -584,7 +583,7 @@ write.csv(evaluation_likes_and_wishes,
 # essential for understanding and working with textual data in computational
 # applications.
 
-## Stopword Removal ----
+## Stopword Removal, Short Word Removal, and Censorship ----
 
 # A stopword is a commonly used word that is usually filtered out during text
 # mining to improve the efficiency and focus of text analysis.
@@ -597,29 +596,46 @@ write.csv(evaluation_likes_and_wishes,
 # Additional examples can be seen here:
 head(sample(stop_words$word, 20), 20)
 
-# You can create a list of words that you would like to filter out
+# You can also create a list of words that you would like to censor
 undesirable_words <- c("wow", "lol", "none", "na")
 
-# unnest and remove stop, undesirable and short words
 evaluation_likes_filtered <- evaluation_likes_and_wishes %>% # nolint
+  # We start by tokenization (unnesting words). This is from the variable
+  # "Like" into the variable "word".
   unnest_tokens(word, Likes) %>%
-  # do not join where the word is in the list of stopwords
+  # Then we remove stopwords using an anti-join (remember this from the
+  # BBT3104: Advanced Database Systems course)
+  # Anti-join: do not join where the word is in the list of stopwords
   anti_join(stop_words, by = c("word")) %>%
   distinct() %>%
+  # Censor or filter out unwanted words
   filter(!word %in% undesirable_words) %>%
+  # Include only words that are more than 3 characters long (assuming that
+  # these are the words that are meaningful)
   filter(nchar(word) > 3) %>%
+  # We then rename the variable "word" for ease of use.
   rename(`Likes (tokenized)` = word) %>%
+  # We focus only on the likes in this data frame
   select(-Wishes)
 
+# Lastly, we save the created data frame as a CSV file:
+write.csv(evaluation_likes_filtered,
+          file = "data/evaluation_likes_filtered.csv",
+          row.names = FALSE)
+
+# The same is done to create a data frame for the "wishes" only
 evaluation_wishes_filtered <- evaluation_likes_and_wishes %>% # nolint
   unnest_tokens(word, Wishes) %>%
-  # do not join where the word is in the list of stopwords
   anti_join(stop_words, by = c("word")) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
   filter(nchar(word) > 3) %>%
   rename(`Wishes (tokenized)` = word) %>%
   select(-Likes)
+
+write.csv(evaluation_wishes_filtered,
+          file = "data/evaluation_wishes_filtered.csv",
+          row.names = FALSE)
 
 # STEP 6. Word Count ----
 ## Evaluation Likes ----
@@ -633,8 +649,9 @@ word_count_per_gender_likes %>%
   mutate(num_words = color_bar("lightblue")(num_words)) %>%
   rename(`Number of Words` = num_words) %>%
   kable("html", escape = FALSE, align = "c",
-        caption = "Number of Words in Evaluation Likes 
-                  (minus stopwords and filtered words) per Gender") %>%
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
@@ -649,8 +666,9 @@ word_count_per_group %>%
   mutate(num_words = color_bar("lightblue")(num_words)) %>%
   rename(`Number of Words` = num_words) %>%
   kable("html", escape = FALSE, align = "c",
-        caption = "Number of Words in Evaluation Likes 
-                  (minus stopwords and filtered words) per Class Group") %>%
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
@@ -666,8 +684,9 @@ word_count_per_gender_wishes %>%
   mutate(num_words = color_bar("lightblue")(num_words)) %>%
   rename(`Number of Words` = num_words) %>%
   kable("html", escape = FALSE, align = "c",
-        caption = "Number of Words in Evaluation Wishes 
-                  (minus stopwords and filtered words) per Gender") %>%
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
@@ -682,12 +701,12 @@ word_count_per_group_wishes %>%
   mutate(num_words = color_bar("lightblue")(num_words)) %>%
   rename(`Number of Words` = num_words) %>%
   kable("html", escape = FALSE, align = "c",
-        caption = "Number of Words in Evaluation Wishes 
-                  (minus stopwords and filtered words) per Class Group") %>%
+        caption = "Number of Significant Words in Evaluation Wishes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
   kable_styling(bootstrap_options =
                   c("striped", "condensed", "bordered"),
                 full_width = FALSE)
-
 
 # STEP 7. Top Words ----
 ## Evaluation Likes ----
@@ -703,7 +722,7 @@ evaluation_likes_filtered %>%
   geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes for Female
           Students") +
   coord_flip()
@@ -720,7 +739,7 @@ evaluation_likes_filtered %>%
   geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes for Male
           Students") +
   coord_flip()
@@ -738,7 +757,8 @@ popular_words %>%
   ggplot(aes(row, n, fill = `Student's Gender`)) +
   geom_col(fill = blue_grey_colours_1) +
   blue_grey_theme() +
-  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
+  labs(x = "Word in Course Evaluation",
+       y = "Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes per Gender") +
   facet_wrap(~`Student's Gender`, scales = "free") +
   scale_x_continuous(
@@ -758,7 +778,7 @@ evaluation_likes_filtered %>%
   geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group A
           Students") +
   coord_flip()
@@ -775,7 +795,7 @@ evaluation_likes_filtered %>%
   geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group B
           Students") +
   coord_flip()
@@ -792,7 +812,7 @@ evaluation_likes_filtered %>%
   geom_col(aes(`Likes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Likes for Group C
           Students") +
   coord_flip()
@@ -832,7 +852,7 @@ evaluation_wishes_filtered %>%
   geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Female
           Students") +
   coord_flip()
@@ -849,7 +869,7 @@ evaluation_wishes_filtered %>%
   geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Male
           Students") +
   coord_flip()
@@ -887,7 +907,7 @@ evaluation_wishes_filtered %>%
   geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group A
           Students") +
   coord_flip()
@@ -904,7 +924,7 @@ evaluation_wishes_filtered %>%
   geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group B
           Students") +
   coord_flip()
@@ -921,7 +941,7 @@ evaluation_wishes_filtered %>%
   geom_col(aes(`Wishes (tokenized)`, n), fill = blue_grey_colours_1) +
   blue_grey_theme() +
   xlab("Word in Course Evaluation") +
-  ylab("Number of Times Used") +
+  ylab("Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes for Group C
           Students") +
   coord_flip()
@@ -939,7 +959,8 @@ popular_words %>%
   ggplot(aes(row, n, fill = `Class Group`)) +
   geom_col(fill = blue_grey_colours_1) +
   blue_grey_theme() +
-  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
+  labs(x = "Word in Course Evaluation",
+       y = "Number of Times Used (Term Frequency)") +
   ggtitle("Most Frequently Used Words in Course Evaluation Wishes per 
           Class Group") +
   facet_wrap(~`Class Group`, scales = "free") +
@@ -982,13 +1003,14 @@ wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
 # respect to all the comments made.
 
 # TF-IDF is used to evaluate the importance of a word in a document relative to
-# a collection of documents (corpus).
+# a collection of documents (a collection of documents is called a corpus).
 # By doing so, TF-IDF helps identify how significant a word is within a
 # particular document compared to its general frequency in a set of documents.
 
 # The assumption behind TF-IDF is that terms that appear more frequently in a
-# document (or a comment) should be given a higher weight, unless it also
-# appears in many documents (or many other comments).
+# document (or a comment in this case) should be given a higher weight, unless
+# it also appears in many other documents (or many other comments in this
+# case).
 
 ## Term Frequency (TF) ----
 # This measures how often a word appears in a specific document. Words that
@@ -1034,23 +1056,69 @@ wordcloud2(evaluation_wishes_filtered_cloud, size = .5)
 # analyze and understand textual data by identifying the most relevant and
 # distinctive terms within documents.
 
-## Summary ----
+## Simpler TF-IDF calculation ----
 # Term Frequency (TF): Number of times a term occurs in a document
-# Document Frequency (DF): Number of documents that contain each word
+# Document Frequency (DF): Number of documents that contain the term
 # Inverse Document Frequency (IDF) = 1/DF
 # TF-IDF is equal to TF * IDF
-# The IDF of any term is therefore a higher number for words that occur in
+# The IDF of any term is, therefore, a higher number for words that occur in
 # fewer of the documents in the collection.
+
+## Stopword Removal Before TF-IDF ----
+
+### Advantages ----
+
+# Stopwords are common words like "the," "and," "in," which typically do not
+# carry much meaningful information. Removing them can reduce noise in your
+# data and improve the efficiency of TF-IDF calculations.
+# It can help focus the analysis on the more meaningful and distinctive terms
+# in your documents.
+
+### Disadvantages ----
+
+# In some cases, stopwords may carry contextual information. For example, in
+# sentiment analysis, words like "not" or "but" can change the meaning of a
+# sentence. Removing them may lead to a loss of important information.
+# If you're using TF-IDF for tasks like topic modeling or document clustering,
+# stopwords may play a role in identifying topics or clusters.
+
+## Stopword Inclusion in TF-IDF ----
+
+### Advantages ----
+
+# Including stopwords in the TF-IDF calculation can preserve their importance
+# if they appear in a meaningful way in your documents.
+# It can be especially useful in tasks where the context provided by stopwords
+# matters.
+
+### Disadvantages ----
+
+# Stopwords can dominate the TF-IDF score for some terms, even though they are
+# not usually informative.
+# This approach may result in less efficient computations and a larger feature
+# space in your TF-IDF matrix.
+
+# In practice, the decision to remove stopwords before TF-IDF or include them
+# depends on the specific problem you are trying to solve and the
+# characteristics of your dataset. It's common to experiment with both
+# approaches and evaluate their impact on the performance of your NLP tasks
+# (e.g., text classification, information retrieval, document clustering) to
+# determine which one works better for your particular use case.
+
+# Additionally, some libraries, packages, and tools offer options to customize
+# stopword removal within the TF-IDF process, allowing you to strike a balance
+# between preserving potentially meaningful stopwords and reducing noise in
+# your data.
 
 ## Evaluation Likes ----
 ### TF-IDF Score per Gender ----
-popular_tfidf_words_gender_likes <- evaluation_likes_and_wishes %>% # nolint
-  unnest_tokens(word, Likes) %>%
+popular_tfidf_words_gender_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
   filter(nchar(word) > 3) %>%
   rename(`Likes (tokenized)` = word) %>%
-  select(-Wishes, `Class Group`, `Student's Gender`,
+  select(`Class Group`, `Student's Gender`,
          `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
   count(`Student's Gender`, `Likes (tokenized)`, sort = TRUE) %>%
   ungroup() %>%
@@ -1084,13 +1152,13 @@ top_popular_tfidf_words %>%
   coord_flip()
 
 ### TF-IDF Score per Group ----
-popular_tfidf_words_likes <- evaluation_likes_and_wishes %>% # nolint
-  unnest_tokens(word, Likes) %>%
+popular_tfidf_words_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
   filter(nchar(word) > 3) %>%
   rename(`Likes (tokenized)` = word) %>%
-  select(-Wishes, `Class Group`, `Student's Gender`,
+  select(`Class Group`, `Student's Gender`,
          `Average Course Evaluation Rating`, `Likes (tokenized)`) %>%
   count(`Class Group`, `Likes (tokenized)`, sort = TRUE) %>%
   ungroup() %>%
@@ -1125,13 +1193,13 @@ top_popular_tfidf_words %>%
 
 ## Evaluation Wishes ----
 ### TF-IDF Score per Gender ----
-popular_tfidf_words_gender_wishes <- evaluation_likes_and_wishes %>% # nolint
-  unnest_tokens(word, Wishes) %>%
+popular_tfidf_words_gender_wishes <- evaluation_wishes_filtered %>% # nolint
+  unnest_tokens(word, `Wishes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
   filter(nchar(word) > 3) %>%
   rename(`Wishes (tokenized)` = word) %>%
-  select(-Likes, `Class Group`, `Student's Gender`,
+  select(`Class Group`, `Student's Gender`,
          `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
   count(`Student's Gender`, `Wishes (tokenized)`, sort = TRUE) %>%
   ungroup() %>%
@@ -1165,13 +1233,13 @@ top_popular_tfidf_words %>%
   coord_flip()
 
 ### TF-IDF Score per Group ----
-popular_tfidf_words_likes <- evaluation_likes_and_wishes %>% # nolint
-  unnest_tokens(word, Likes) %>%
+popular_tfidf_words_likes <- evaluation_wishes_filtered %>% # nolint
+  unnest_tokens(word, `Wishes (tokenized)`) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
   filter(nchar(word) > 3) %>%
   rename(`Wishes (tokenized)` = word) %>%
-  select(-Wishes, `Class Group`, `Student's Gender`,
+  select(`Class Group`, `Student's Gender`,
          `Average Course Evaluation Rating`, `Wishes (tokenized)`) %>%
   count(`Class Group`, `Wishes (tokenized)`, sort = TRUE) %>%
   ungroup() %>%
@@ -1232,6 +1300,8 @@ top_popular_tfidf_words %>%
 
 ## Leonawicz, M. (2023). memery: Internet Memes for Data Analysts (0.5.7) [Computer software]. https://cran.r-project.org/package=memery # nolint ----
 
+## Liske, D. (2018). R NLP & Machine Learning: Lyric Analysis [Tutorial]. Datacamp. https://www.datacamp.com/tutorial/R-nlp-machine-learning # nolint ----
+
 ## Ooms, J. (2023). magick: Advanced Graphics and Image-Processing in R (2.7.5) [Computer software]. https://cran.r-project.org/package=magick # nolint ----
 
 ## Pedersen, T. L., & RStudio. (2022). ggraph: An Implementation of Grammar of Graphics for Graphs and Networks (2.1.0) [Computer software]. https://cran.r-project.org/package=ggraph # nolint ----
@@ -1262,40 +1332,15 @@ top_popular_tfidf_words %>%
 #       Git and GitHub.
 
 ## Part A ----
-# Create a new file in the project's root folder called
-# "Lab2-Submission-ExploratoryDataAnalysis.R".
-# Use this file to provide all the code you have used to perform an exploratory
-# data analysis of the "Class Performance Dataset" provided on the eLearning
-# platform.
-
-## Part B ----
-# Upload *the link* to your "Lab2-Submission-ExploratoryDataAnalysis.R" hosted
-# on Github (do not upload the .R file itself) through the submission link
-# provided on eLearning.
-
-## Part C ----
 # Create a markdown file called "Lab-Submission-Markdown.Rmd"
 # and place it inside the folder called "markdown". Use R Studio to ensure the
 # .Rmd file is based on the "GitHub Document (Markdown)" template when it is
 # being created.
+# Provide an interpretation of the most significant visualizations in the
+# markdown file. The emphasis should be on ensuring that the visualizations are
+# understandable.
 
-# Refer to the following file in Lab 1 for an example of a .Rmd file based on
-# the "GitHub Document (Markdown)" template:
-#     https://github.com/course-files/BBT4206-R-Lab1of15-LoadingDatasets/blob/main/markdown/BIProject-Template.Rmd # nolint
-
-# Include Line 1 to 14 of BIProject-Template.Rmd in your .Rmd file to make it
-# displayable on GitHub when rendered into its .md version
-
-# It should have code chunks that explain only *the most significant*
-# analysis performed on the dataset.
-
-# The emphasis should be on Explanatory Data Analysis (explains the key
-# statistics performed on the dataset) as opposed to
-# Exploratory Data Analysis (presents ALL the statistics performed on the
-# dataset). Exploratory Data Analysis that presents ALL the possible statistics
-# re-creates the problem of information overload.
-
-## Part D ----
+## Part B ----
 # Render the .Rmd (R markdown) file into its .md (markdown) version by using
 # knitR in RStudio.
 

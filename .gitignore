@@ -14,3 +14,7 @@ api_key.txt
 # Ignore compiled code
 *.dll
 *.so
+
+# Ignored datasets
+data/prince_new.csv
+data/prince_raw_data.csv
