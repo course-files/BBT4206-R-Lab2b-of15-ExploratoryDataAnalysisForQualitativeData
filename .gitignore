@@ -16,5 +16,8 @@ api_key.txt
 *.so
 
 # Ignored datasets
-data/*.CSV
-data/*.csv
+data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV
+data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.txt
+data/evaluation_likes_and_wishes.csv
+data/evaluation_likes_filtered.csv
+data/evaluation_wishes_filtered.csv
