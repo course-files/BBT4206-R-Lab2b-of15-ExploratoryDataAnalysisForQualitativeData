@@ -353,11 +353,12 @@ student_performance_dataset <-
                 col_factor(levels = c("0", "1", "2", "3")),
                 mentor = col_factor(levels = c("0", "1")),
                 mentor_meetings = col_factor(levels = c("0", "1", "2", "3")),
-                `Attendance Waiver Granted\n1 = Yes\n0 = No` =
+                `Attendance Waiver Granted: 1 = Yes, 0 = No` =
                 col_factor(levels = c("0", "1")),
                 GRADE = col_factor(levels = c("A", "B", "C", "D", "E"))),
            locale = locale())
-View(student_performance_dataset)
+
+View(student_performance_dataset, 10)
 
 # Dimensions
 dim(student_performance_dataset)
