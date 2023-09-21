@@ -1415,10 +1415,11 @@ top_popular_tfidf_words %>%
 
 # By default, Rmd files are open as Markdown documents. To enable R Markdown
 # features, you need to associate *.Rmd files with rmd language.
-# Add an entry Item "*.Rmd" and Value "rmd" in the VS Code settings editor.
+# Add an entry Item "*.Rmd" and Value "rmd" in the VS Code settings,
+# "File Association" option.
 
 # Documentation of knitR: https://www.rdocumentation.org/packages/knitr/
 
 # Upload *the link* to "Lab-Submission-Markdown.md" (not .Rmd)
-# markdown file hosted on Github (do not upload the .Rmd or .md markdown files)
-# through the submission link provided on eLearning.
+# markdown file hosted on Github's main branch (do not upload the .Rmd or .md
+# markdown files) through the submission link provided on eLearning.
