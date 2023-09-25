@@ -232,7 +232,8 @@ require("wordcloud2")
 
 ## readr - Load datasets from CSV files ----
 if (!is.element("readr", installed.packages()[, 1])) {
-  install.packages("readr", dependencies = TRUE, repos="https://cloud.r-project.org")
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("readr")
 
@@ -623,6 +624,13 @@ write.csv(evaluation_likes_and_wishes,
 # structure of words, are often preferred for certain Natural Language
 # Processing (NLP) tasks.
 
+# Summary:
+#  (i) Stemming: generally refers to removing suffixes from words to get the
+#      common origin
+#  (ii) Lemmatization: reducing inflected (or sometimes derived) words to their
+#       word stem, base or root form
+#  (iii) Word replacement: replace words with more frequently used synonyms
+
 ## Tokenization ----
 # The goal of text mining is to discover relevant information that is possibly
 # unknown or hidden. Natural Language Processing (NLP) is one methodology used
@@ -665,7 +673,7 @@ head(sample(stop_words$word, 20), 20)
 undesirable_words <- c("wow", "lol", "none", "na")
 
 evaluation_likes_filtered <- evaluation_likes_and_wishes %>% # nolint
-  # We start by tokenization (unnesting words). This is from the variable
+  # We start by tokenization (un-nesting words). This is from the variable
   # "Like" into the variable "word".
   unnest_tokens(word, Likes) %>%
   # Then we remove stopwords using an anti-join (remember this from the
@@ -1393,7 +1401,7 @@ top_popular_tfidf_words %>%
 #       Git and GitHub.
 
 ## Part A ----
-# Create a markdown file called "Lab-Submission-Markdown.Rmd"
+# Create a markdown file called "Lab2b-Submission-EDA-Qual-Markdown.Rmd"
 # and place it inside the folder called "markdown". Use R Studio to ensure the
 # .Rmd file is based on the "GitHub Document (Markdown)" template when it is
 # being created.
@@ -1420,6 +1428,6 @@ top_popular_tfidf_words %>%
 
 # Documentation of knitR: https://www.rdocumentation.org/packages/knitr/
 
-# Upload *the link* to "Lab-Submission-Markdown.md" (not .Rmd)
+# Upload *the link* to "Lab2b-Submission-EDA-Qual-Markdown.md" (not .Rmd)
 # markdown file hosted on Github's main branch (do not upload the .Rmd or .md
 # markdown files) through the submission link provided on eLearning.
