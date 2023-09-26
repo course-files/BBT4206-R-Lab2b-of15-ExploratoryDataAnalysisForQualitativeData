@@ -27,7 +27,8 @@
 
 # "renv" It can be installed as follows:
 # if (!is.element("renv", installed.packages()[, 1])) {
-#   install.packages("renv", dependencies = TRUE) # nolint
+# install.packages("renv", dependencies = TRUE,
+repos = "https://cloud.r-project.org") # nolint
 # }
 # require("renv") # nolint
 
@@ -96,8 +97,10 @@ lapply(.libPaths(), list.files)
 # If renv::restore() did not install the "languageserver" package (required to
 # use R for VS Code), then it can be installed manually as follows (restart R
 # after executing the command):
+
 if (!is.element("languageserver", installed.packages()[, 1])) {
-  install.packages("languageserver", dependencies = TRUE)
+  install.packages("languageserver", dependencies = TRUE,
+  repos = "https://cloud.r-project.org")
 }
 require("languageserver")
 
@@ -118,61 +121,71 @@ require("languageserver")
 
 ## dplyr - For data manipulation ----
 if (!is.element("dplyr", installed.packages()[, 1])) {
-  install.packages("dplyr", dependencies = TRUE)
+  install.packages("dplyr", dependencies = TRUE,
+  repos = "https://cloud.r-project.org")
 }
 require("dplyr")
 
 ## ggplot2 - For data visualizations using the Grammar for Graphics package ----
 if (!is.element("ggplot2", installed.packages()[, 1])) {
-  install.packages("ggplot2", dependencies = TRUE)
+install.packages("ggplot2", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("ggplot2")
 
 ## ggrepel - Additional options for the Grammar for Graphics package ----
 if (!is.element("ggrepel", installed.packages()[, 1])) {
-  install.packages("ggrepel", dependencies = TRUE)
+install.packages("ggrepel", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("ggrepel")
 
 ## ggraph - Additional options for the Grammar for Graphics package ----
 if (!is.element("ggraph", installed.packages()[, 1])) {
-  install.packages("ggraph", dependencies = TRUE)
+install.packages("ggraph", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("ggraph")
 
 ## tidytext - For text mining ----
 if (!is.element("tidytext", installed.packages()[, 1])) {
-  install.packages("tidytext", dependencies = TRUE)
+install.packages("tidytext", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("tidytext")
 
 ## tidyr - To tidy messy data ----
 if (!is.element("tidyr", installed.packages()[, 1])) {
-  install.packages("tidyr", dependencies = TRUE)
+install.packages("tidyr", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("tidyr")
 
 ## widyr - To widen, process, and re-tidy a dataset ----
 if (!is.element("widyr", installed.packages()[, 1])) {
-  install.packages("widyr", dependencies = TRUE)
+install.packages("widyr", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("widyr")
 
 ## gridExtra - to arrange multiple grid-based plots on a page ----
 if (!is.element("gridExtra", installed.packages()[, 1])) {
-  install.packages("gridExtra", dependencies = TRUE)
+install.packages("gridExtra", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("gridExtra")
 
 ## knitr - for dynamic report generation ----
 if (!is.element("knitr", installed.packages()[, 1])) {
-  install.packages("knitr", dependencies = TRUE)
+install.packages("knitr", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("knitr")
 
 ## kableExtra - for nicely formatted output tables ----
 if (!is.element("kableExtra", installed.packages()[, 1])) {
-  install.packages("kableExtra", dependencies = TRUE)
+install.packages("kableExtra", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("kableExtra")
 
@@ -180,14 +193,16 @@ require("kableExtra")
 # A formattable object is an object to which a formatting function and related
 # attributes are attached.
 if (!is.element("formattable", installed.packages()[, 1])) {
-  install.packages("formattable", dependencies = TRUE)
+install.packages("formattable", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("formattable")
 
 ## circlize - To create a cord diagram or visualization ----
 # by Gu et al. (2014)
 if (!is.element("circlize", installed.packages()[, 1])) {
-  install.packages("circlize", dependencies = TRUE)
+install.packages("circlize", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("circlize")
 
@@ -196,44 +211,50 @@ require("circlize")
 # superimposed inset plot and other atypical features, combining the visual
 # impact of an attention-grabbing meme with graphic results of data analysis.
 if (!is.element("memery", installed.packages()[, 1])) {
-  install.packages("memery", dependencies = TRUE)
+install.packages("memery", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("memery")
 
 ## magick - For image processing in R ----
 if (!is.element("magick", installed.packages()[, 1])) {
-  install.packages("magick", dependencies = TRUE)
+install.packages("magick", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("magick")
 
 ## yarrr - To create a pirate plot ----
 if (!is.element("yarrr", installed.packages()[, 1])) {
-  install.packages("yarrr", dependencies = TRUE)
+install.packages("yarrr", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("yarrr")
 
 ## radarchart - To create interactive radar charts using ChartJS ----
 if (!is.element("radarchart", installed.packages()[, 1])) {
-  install.packages("radarchart", dependencies = TRUE)
+install.packages("radarchart", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("radarchart")
 
 ## igraph - To create ngram network diagrams ----
 if (!is.element("igraph", installed.packages()[, 1])) {
-  install.packages("igraph", dependencies = TRUE)
+install.packages("igraph", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("igraph")
 
 ## wordcloud2 - For creating wordcloud by using 'wordcloud2.JS ----
 if (!is.element("wordcloud2", installed.packages()[, 1])) {
-  install.packages("wordcloud2", dependencies = TRUE)
+install.packages("wordcloud2", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("wordcloud2")
 
 ## readr - Load datasets from CSV files ----
 if (!is.element("readr", installed.packages()[, 1])) {
-  install.packages("readr", dependencies = TRUE,
-                   repos = "https://cloud.r-project.org")
+install.packages("readr", dependencies = TRUE,
+repos = "https://cloud.r-project.org")
 }
 require("readr")
 
@@ -249,6 +270,8 @@ blue_grey_colours_6 <- c("#27408E", "#304FAF", "#536CB5",
 
 blue_grey_colours_4 <- c("#27408E", "#536CB5",
                          "#B9BCC2", "#888A8E")
+
+blue_grey_colours_3 <- c("#6981c7", "#304FAF", "#888A8E")
 
 blue_grey_colours_2 <- c("#27408E",
                          "#888A8E")
