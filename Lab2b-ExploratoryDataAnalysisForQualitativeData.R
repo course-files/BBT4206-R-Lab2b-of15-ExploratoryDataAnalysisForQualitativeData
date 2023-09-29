@@ -100,7 +100,7 @@ lapply(.libPaths(), list.files)
 
 if (!is.element("languageserver", installed.packages()[, 1])) {
   install.packages("languageserver", dependencies = TRUE,
-  repos = "https://cloud.r-project.org")
+                   repos = "https://cloud.r-project.org")
 }
 require("languageserver")
 
@@ -122,70 +122,70 @@ require("languageserver")
 ## dplyr - For data manipulation ----
 if (!is.element("dplyr", installed.packages()[, 1])) {
   install.packages("dplyr", dependencies = TRUE,
-  repos = "https://cloud.r-project.org")
+                   repos = "https://cloud.r-project.org")
 }
 require("dplyr")
 
 ## ggplot2 - For data visualizations using the Grammar for Graphics package ----
 if (!is.element("ggplot2", installed.packages()[, 1])) {
-install.packages("ggplot2", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("ggplot2", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("ggplot2")
 
 ## ggrepel - Additional options for the Grammar for Graphics package ----
 if (!is.element("ggrepel", installed.packages()[, 1])) {
-install.packages("ggrepel", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("ggrepel", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("ggrepel")
 
 ## ggraph - Additional options for the Grammar for Graphics package ----
 if (!is.element("ggraph", installed.packages()[, 1])) {
-install.packages("ggraph", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("ggraph", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("ggraph")
 
 ## tidytext - For text mining ----
 if (!is.element("tidytext", installed.packages()[, 1])) {
-install.packages("tidytext", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("tidytext", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("tidytext")
 
 ## tidyr - To tidy messy data ----
 if (!is.element("tidyr", installed.packages()[, 1])) {
-install.packages("tidyr", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("tidyr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("tidyr")
 
 ## widyr - To widen, process, and re-tidy a dataset ----
 if (!is.element("widyr", installed.packages()[, 1])) {
-install.packages("widyr", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("widyr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("widyr")
 
 ## gridExtra - to arrange multiple grid-based plots on a page ----
 if (!is.element("gridExtra", installed.packages()[, 1])) {
-install.packages("gridExtra", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("gridExtra", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("gridExtra")
 
 ## knitr - for dynamic report generation ----
 if (!is.element("knitr", installed.packages()[, 1])) {
-install.packages("knitr", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("knitr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("knitr")
 
 ## kableExtra - for nicely formatted output tables ----
 if (!is.element("kableExtra", installed.packages()[, 1])) {
-install.packages("kableExtra", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("kableExtra", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("kableExtra")
 
@@ -193,16 +193,16 @@ require("kableExtra")
 # A formattable object is an object to which a formatting function and related
 # attributes are attached.
 if (!is.element("formattable", installed.packages()[, 1])) {
-install.packages("formattable", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("formattable", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("formattable")
 
 ## circlize - To create a cord diagram or visualization ----
 # by Gu et al. (2014)
 if (!is.element("circlize", installed.packages()[, 1])) {
-install.packages("circlize", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("circlize", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("circlize")
 
@@ -211,57 +211,57 @@ require("circlize")
 # superimposed inset plot and other atypical features, combining the visual
 # impact of an attention-grabbing meme with graphic results of data analysis.
 if (!is.element("memery", installed.packages()[, 1])) {
-install.packages("memery", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("memery", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("memery")
 
 ## magick - For image processing in R ----
 if (!is.element("magick", installed.packages()[, 1])) {
-install.packages("magick", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("magick", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("magick")
 
 ## yarrr - To create a pirate plot ----
 if (!is.element("yarrr", installed.packages()[, 1])) {
-install.packages("yarrr", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("yarrr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("yarrr")
 
 ## radarchart - To create interactive radar charts using ChartJS ----
 if (!is.element("radarchart", installed.packages()[, 1])) {
-install.packages("radarchart", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("radarchart", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("radarchart")
 
 ## igraph - To create ngram network diagrams ----
 if (!is.element("igraph", installed.packages()[, 1])) {
-install.packages("igraph", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("igraph", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("igraph")
 
 ## wordcloud2 - For creating wordcloud by using 'wordcloud2.JS ----
 if (!is.element("wordcloud2", installed.packages()[, 1])) {
-install.packages("wordcloud2", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("wordcloud2", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("wordcloud2")
 
 ## readr - Load datasets from CSV files ----
 if (!is.element("readr", installed.packages()[, 1])) {
-install.packages("readr", dependencies = TRUE,
-repos = "https://cloud.r-project.org")
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
 }
 require("readr")
 
 # STEP 2. Customize the Visualizations, Tables, and Colour Scheme ----
 # The following defines a blue-grey colour scheme for the visualizations:
 ## shades of blue and shades of grey
-blue_grey_colours_11 <- c("#27408E", "#304FAF", "#536CB5", "#6981c7", "#8da0db",
+blue_grey_colours_11 <- c("#7b90d1", "#304FAF", "#536CB5", "#6981c7", "#8da0db",
                           "#dde5ec", "#c8c9ca", "#B9BCC2", "#A7AAAF", "#888A8E",
                           "#636569")
 
@@ -503,7 +503,7 @@ summary(student_performance_dataset)
 evaluation_per_group_per_gender <- student_performance_dataset %>% # nolint
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
-  select(class_group, gender,
+  select(class_group,
          `Student's Gender`, `Average Course Evaluation Rating`) %>%
   filter(!is.na(`Average Course Evaluation Rating`)) %>%
   group_by(class_group, `Student's Gender`) %>%
@@ -579,7 +579,7 @@ evaluation_likes_and_wishes <- student_performance_dataset %>%
   mutate(`Student's Gender` =
            ifelse(gender == 1, "Male", "Female")) %>%
   rename(`Class Group` = class_group) %>%
-  rename(Likes = `D - 1. \nWrite two things you like about the teaching and learning in this unit so far.`) %>% # nolint
+  rename(Likes = `D - 1. Write two things you like about the teaching and learning in this unit so far.`) %>% # nolint
   rename(Wishes = `D - 2. Write at least one recommendation to improve the teaching and learning in this unit (for the remaining weeks in the semester)`) %>% # nolint
   select(`Class Group`,
          `Student's Gender`, `Average Course Evaluation Rating`,
@@ -654,6 +654,15 @@ write.csv(evaluation_likes_and_wishes,
 #       word stem, base or root form
 #  (iii) Word replacement: replace words with more frequently used synonyms
 
+# Refer to the following guide: https://cran.r-project.org/web/packages/textstem/readme/README.html
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(textstem, dplyr)
+
+lemma_dictionary_hs <- make_lemma_dictionary(evaluation_likes_and_wishes$Likes, engine = 'hunspell')
+
+lemmatize_strings(evaluation_likes_and_wishes$Likes, dictionary = lemma_dictionary_hs)
+
 ## Tokenization ----
 # The goal of text mining is to discover relevant information that is possibly
 # unknown or hidden. Natural Language Processing (NLP) is one methodology used
@@ -689,6 +698,7 @@ write.csv(evaluation_likes_and_wishes,
 # Examples of stopwords in English include:
 # "the," "and," "is," "in," "it," "of," "to," "for," and "with."
 
+View(stop_words)
 # Additional examples can be seen here:
 head(sample(stop_words$word, 20), 20)
 
