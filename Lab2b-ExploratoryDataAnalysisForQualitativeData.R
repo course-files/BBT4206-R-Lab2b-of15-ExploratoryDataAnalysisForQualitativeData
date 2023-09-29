@@ -114,7 +114,6 @@ require("languageserver")
 # (ii) Sentence
 # (iii) Word
 
-
 # STEP 1. Install and Load the Required Packages ----
 # The following packages can be installed and loaded before proceeding to the
 # subsequent steps.
@@ -258,6 +257,27 @@ if (!is.element("readr", installed.packages()[, 1])) {
 }
 require("readr")
 
+## textstem - Used to lemmatize words ----
+if (!is.element("textstem", installed.packages()[, 1])) {
+  install.packages("textstem", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("textstem")
+
+## hunspell - High-Performance Stemmer, Tokenizer, and Spell Checker ----
+if (!is.element("hunspell", installed.packages()[, 1])) {
+  install.packages("hunspell", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("hunspell")
+
+## stringr - For processing characters in a string ----
+if (!is.element("stringr", installed.packages()[, 1])) {
+  install.packages("stringr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("stringr")
+
 # STEP 2. Customize the Visualizations, Tables, and Colour Scheme ----
 # The following defines a blue-grey colour scheme for the visualizations:
 ## shades of blue and shades of grey
@@ -304,8 +324,8 @@ blue_grey_theme <- function() {
 }
 
 # Customize the text tables for consistency using HTML formatting
-kable_theme <- function(dat, caption) {
-  kable(dat, "html", escape = FALSE, caption = caption) %>%
+kable_theme <- function(data, caption) {
+  kable(data, "html", escape = FALSE, caption = caption) %>%
     kable_styling(bootstrap_options = c("striped", "condensed", "bordered"),
                   full_width = FALSE)
 }
@@ -523,11 +543,7 @@ evaluation_per_group_per_gender %>%
   mutate(`Average Course Evaluation Rating` =
            color_tile("#B9BCC2", "#536CB5")
            (`Average Course Evaluation Rating`)) %>%
-  kable("html", escape = FALSE, align = "c",
-        caption = "Course Evaluation Rating per Group and per Gender") %>%
-  kable_styling(bootstrap_options =
-                  c("striped", "condensed", "bordered"),
-                full_width = FALSE)
+  kable_theme(caption = "Course Evaluation Rating per Group and per Gender")
 
 # Decorated visual bar chart
 evaluation_per_group_per_gender %>%
@@ -608,7 +624,7 @@ View(evaluation_likes_and_wishes)
 # To test your regular expression: https://regexr.com/
 
 remove_special_characters <- function(doc) {
-  gsub("[^a-zA-Z0-9 ]", "", doc, ignore.case = TRUE)
+  gsub("[^a-zA-Z ]", "", doc, ignore.case = TRUE)
 }
 
 # Before removing special characters (See row number 11)
@@ -628,40 +644,6 @@ View(evaluation_likes_and_wishes)
 write.csv(evaluation_likes_and_wishes,
           file = "data/evaluation_likes_and_wishes.csv",
           row.names = FALSE)
-
-## Stemming/Lemmatization ----
-# Stemming is a text processing technique used to reduce words to their base or
-# root form, known as the "stem."
-# The goal of stemming is to simplify words to their common linguistic root,
-# which can help improve text analysis and Information Retrieval by treating
-# different inflections or variations of a word as the same word.
-
-# Stemming groups together words with the same meaning but different
-# grammatical forms. For example, stemming can convert words like "jumping,"
-# "jumps," and "jumped" to the common stem "jump."
-
-# [CAUTION] Stemming is a simple and heuristic-based approach and may not always
-# produce accurate results. In some cases, it may produce stems that are not
-# actual words or may result in ambiguity. For this reason, more advanced
-# techniques like *lemmatization*, which considers the context and grammatical
-# structure of words, are often preferred for certain Natural Language
-# Processing (NLP) tasks.
-
-# Summary:
-#  (i) Stemming: generally refers to removing suffixes from words to get the
-#      common origin
-#  (ii) Lemmatization: reducing inflected (or sometimes derived) words to their
-#       word stem, base or root form
-#  (iii) Word replacement: replace words with more frequently used synonyms
-
-# Refer to the following guide: https://cran.r-project.org/web/packages/textstem/readme/README.html
-
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(textstem, dplyr)
-
-lemma_dictionary_hs <- make_lemma_dictionary(evaluation_likes_and_wishes$Likes, engine = 'hunspell')
-
-lemmatize_strings(evaluation_likes_and_wishes$Likes, dictionary = lemma_dictionary_hs)
 
 ## Tokenization ----
 # The goal of text mining is to discover relevant information that is possibly
@@ -708,7 +690,7 @@ undesirable_words <- c("wow", "lol", "none", "na")
 evaluation_likes_filtered <- evaluation_likes_and_wishes %>% # nolint
   # We start by tokenization (un-nesting words). This is from the variable
   # "Like" into the variable "word".
-  unnest_tokens(word, Likes) %>%
+  unnest_tokens(word, Likes, token = "ngrams", n = 1) %>%
   # Then we remove stopwords using an anti-join (remember this from the
   # BBT3104: Advanced Database Systems course)
   # Anti-join: do not join where the word is in the list of stopwords
@@ -724,6 +706,8 @@ evaluation_likes_filtered <- evaluation_likes_and_wishes %>% # nolint
   # We focus only on the likes in this data frame
   select(-Wishes)
 
+View(evaluation_likes_filtered)
+
 # Lastly, we save the created data frame as a CSV file:
 write.csv(evaluation_likes_filtered,
           file = "data/evaluation_likes_filtered.csv",
@@ -731,7 +715,7 @@ write.csv(evaluation_likes_filtered,
 
 # The same is done to create a data frame for the "wishes" only
 evaluation_wishes_filtered <- evaluation_likes_and_wishes %>% # nolint
-  unnest_tokens(word, Wishes) %>%
+  unnest_tokens(word, Wishes, token = "ngrams", n = 1) %>%
   anti_join(stop_words, by = c("word")) %>%
   distinct() %>%
   filter(!word %in% undesirable_words) %>%
@@ -739,9 +723,188 @@ evaluation_wishes_filtered <- evaluation_likes_and_wishes %>% # nolint
   rename(`Wishes (tokenized)` = word) %>%
   select(-Likes)
 
+View(evaluation_wishes_filtered)
+
 write.csv(evaluation_wishes_filtered,
           file = "data/evaluation_wishes_filtered.csv",
           row.names = FALSE)
+
+## Stemming/Lemmatization ----
+# Stemming is a text processing technique used to reduce words to their base or
+# root form, known as the "stem."
+# The goal of stemming is to simplify words to their common linguistic root,
+# which can help improve text analysis and Information Retrieval by treating
+# different inflections or variations of a word as the same word.
+
+# Stemming groups together words with the same meaning but different
+# grammatical forms. For example, stemming can convert words like "jumping,"
+# "jumps," and "jumped" to the common stem "jump."
+
+# [CAUTION] Stemming is a simple and heuristic-based approach and may not always
+# produce accurate results. In some cases, it may produce stems that are not
+# actual words or may result in ambiguity. For this reason, more advanced
+# techniques like *lemmatization*, which considers the context and grammatical
+# structure of words, are often preferred for certain Natural Language
+# Processing (NLP) tasks.
+
+# Summary:
+#  (i) Stemming: generally refers to removing suffixes from words to get the
+#      common origin
+#  (ii) Lemmatization: reducing inflected (or sometimes derived) words to their
+#       word stem, base or root form
+#  (iii) Word replacement: replace words with more frequently used synonyms
+
+# Refer to the following guide:
+#   https://cran.r-project.org/web/packages/textstem/readme/README.html
+
+### Correct Spelling Mistakes ----
+# We can correct spelling mistakes before lemmatization as follows:
+# Define a custom function to correct spelling
+correct_spelling <- function(x) {
+  sapply(1:length(x),
+    function(y) {
+      bad <- hunspell(x[y])[[1]]
+      good <-
+        unlist(lapply(hunspell_suggest(bad),
+                      `[[`, 1))
+
+      if (length(bad)) {
+        for (i in 1:length(bad)){
+          x[y] <<- gsub(bad[i], good[i], x[y])
+        }
+      }
+    }
+  )
+  x
+}
+
+#### Likes ----
+# Before spelling correction
+# Take note of the following misspelt words (for the trigram):
+#   Line 40: "applicationsthe" instead of "applications the" # nolint
+#   Line 102: "intergration" instead of "integration" # nolint
+#   etc.
+View(evaluation_likes_filtered)
+
+corrected_spelling <-
+  evaluation_likes_filtered$`Likes (tokenized)` %>%
+  correct_spelling()
+
+evaluation_likes_filtered$`Likes (tokenized)` <- corrected_spelling
+
+# After spelling correction
+View(evaluation_likes_filtered)
+
+### Repeat the pre-processing for the correctly spelt words ----
+# This is done for the sake of the words which were split into more than one
+# word after correcting the spelling mistake.
+
+# The repeated pre-processing includes:
+# 1. Expanding Contractions
+evaluation_likes_filtered$`Likes (tokenized)` <- sapply(evaluation_likes_filtered$`Likes (tokenized)`, expand_contractions) # nolint
+# 2. Remove special Characters
+evaluation_likes_filtered$`Likes (tokenized)` <- sapply(evaluation_likes_filtered$`Likes (tokenized)`, remove_special_characters) # nolint
+# 3. Convert to Lower-Case for a standard form
+evaluation_likes_filtered$`Likes (tokenized)` <- sapply(evaluation_likes_filtered$`Likes (tokenized)`, tolower) # nolint
+
+# 4. Tokenization, stopword removal, short word removal, and censorship
+evaluation_likes_filtered <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`, token = "ngrams", n = 1) %>%
+  anti_join(stop_words, by = c("word")) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes (tokenized)` = word)
+
+write.csv(evaluation_likes_filtered,
+          file = "data/evaluation_likes_filtered.csv",
+          row.names = FALSE)
+
+View(evaluation_likes_filtered)
+
+#### Wishes ----
+# Before spelling correction
+# Take note of the following misspelt words (for the trigram):
+#   Line 40: "applicationsthe" instead of "applications the" # nolint
+#   Line 102: "intergration" instead of "integration" # nolint
+#   etc.
+View(evaluation_wishes_filtered)
+
+corrected_spelling <-
+  evaluation_wishes_filtered$`Wishes (tokenized)` %>%
+  correct_spelling()
+
+evaluation_wishes_filtered$`Wishes (tokenized)` <- corrected_spelling
+
+# After spelling correction
+View(evaluation_wishes_filtered)
+
+### Repeat the pre-processing for the correctly spelt words ----
+# This is done for the sake of the words which were split into more than one
+# word after correcting the spelling mistake.
+
+# The repeated pre-processing includes:
+# 1. Expanding Contractions
+evaluation_wishes_filtered$`Wishes (tokenized)` <- sapply(evaluation_wishes_filtered$`Wishes (tokenized)`, expand_contractions) # nolint
+# 2. Remove special Characters
+evaluation_wishes_filtered$`Wishes (tokenized)` <- sapply(evaluation_wishes_filtered$`Wishes (tokenized)`, remove_special_characters) # nolint
+# 3. Convert to Lower-Case for a standard form
+evaluation_wishes_filtered$`Wishes (tokenized)` <- sapply(evaluation_wishes_filtered$`Wishes (tokenized)`, tolower) # nolint
+
+# 4. Tokenization, stopword removal, short word removal, and censorship
+evaluation_wishes_filtered <- evaluation_wishes_filtered %>% # nolint
+  unnest_tokens(word, `Wishes (tokenized)`, token = "ngrams", n = 1) %>%
+  anti_join(stop_words, by = c("word")) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Wishes (tokenized)` = word)
+
+write.csv(evaluation_wishes_filtered,
+          file = "data/evaluation_wishes_filtered.csv",
+          row.names = FALSE)
+
+View(evaluation_wishes_filtered)
+
+### We can now perform lemmatization on the correctly spelt words ----
+# We need to first create a lemma lookup table. The lemmatize_strings()
+# function will then use this lookup table to replace the words.
+
+# Think of the lemma lookup table as a subset of an entire lemma dictionary.
+# This makes it easier to search for a word in the smaller lookup table
+# instead of searching for a word in the entire lemma dictionary.
+
+# Lemma lookup tables specific to a project can be made by referring to
+# a pre-existing lemma dictionary. The code below shows how the "Hunspell"
+# lemma dictionary is used to create  the lemma lookup table (subset of
+# the dictionary).
+
+# Lemma dictionaries include:
+#   1. Hunspell: https://hunspell.github.io/ or
+#                https://cran.r-project.org/package=hunspell
+#   2. koRpus: https://reaktanz.de/?c=hacking&s=koRpus or
+#              https://cran.r-project.org/package=koRpus
+#   3. Michal Měchura (2016): https://www.lexiconista.com/
+#   etc.
+
+lemma_dictionary_for_likes <-
+  make_lemma_dictionary(evaluation_likes_filtered$`Likes (tokenized)`,
+                        engine = "hunspell")
+
+evaluation_likes_filtered$`Likes (tokenized)` <-
+  evaluation_likes_filtered$`Likes (tokenized)` %>%
+  lemmatize_strings(dictionary = lemma_dictionary_for_likes)
+
+View(evaluation_likes_filtered)
+lemma_dictionary_for_wishes <-
+  make_lemma_dictionary(evaluation_wishes_filtered$`Wishes (tokenized)`,
+                        engine = "hunspell")
+
+evaluation_wishes_filtered$`Wishes (tokenized)` <-
+  evaluation_wishes_filtered$`Wishes (tokenized)` %>%
+  lemmatize_strings(dictionary = lemma_dictionary_for_wishes)
+
+View(evaluation_wishes_filtered)
 
 # STEP 6. Word Count ----
 ## Evaluation Likes ----
