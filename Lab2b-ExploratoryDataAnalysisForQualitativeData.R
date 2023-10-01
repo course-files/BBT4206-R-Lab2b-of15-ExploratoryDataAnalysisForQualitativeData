@@ -1569,6 +1569,8 @@ top_popular_tfidf_words %>%
 
 ## Ooms, J. (2023). magick: Advanced Graphics and Image-Processing in R (2.7.5) [Computer software]. https://cran.r-project.org/package=magick # nolint ----
 
+## Ooms, J. (2022). hunspell: High-Performance Stemmer, Tokenizer, and Spell Checker (3.0.2) [Computer software]. https://cran.r-project.org/package=hunspell # NOLINT
+
 ## Pedersen, T. L., & RStudio. (2022). ggraph: An Implementation of Grammar of Graphics for Graphs and Networks (2.1.0) [Computer software]. https://cran.r-project.org/package=ggraph # nolint ----
 
 ## Phillips, N. (2017). yarrr: A Companion to the e-Book ‘YaRrr!: The Pirate’s Guide to R’ (0.1.5) [Computer software]. https://cran.r-project.org/package=yarrr # nolint ----
