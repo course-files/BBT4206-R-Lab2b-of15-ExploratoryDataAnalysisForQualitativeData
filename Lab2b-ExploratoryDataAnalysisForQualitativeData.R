@@ -761,7 +761,7 @@ write.csv(evaluation_wishes_filtered,
 # We can correct spelling mistakes before lemmatization as follows:
 # Define a custom function to correct spelling
 correct_spelling <- function(x) {
-  sapply(1:length(x),
+  sapply(1:length(x), # nolint
     function(y) {
       bad <- hunspell(x[y])[[1]]
       good <-
@@ -769,7 +769,7 @@ correct_spelling <- function(x) {
                       `[[`, 1))
 
       if (length(bad)) {
-        for (i in 1:length(bad)){
+        for (i in 1:length(bad)){ # nolint
           x[y] <<- gsub(bad[i], good[i], x[y])
         }
       }
